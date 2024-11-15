@@ -2,41 +2,41 @@
 SHELL = /bin/bash
 
 # Убедитесь, что этот шаг запускается с правами администратора
-.PHONY: init_scripts
+.PHONY:
 init_scripts:
 	# Установим права на исполнение для всех скриптов в папке sh
-	sudo chmod +x ./sh/*.sh
+	chmod +x ./sh/*.sh
 
 .PHONY: init_env
 init_env:
 	# Выполним скрипт для инициализации директорий Docker
-	sudo ./sh/init_env.sh
+	./sh/init_env.sh
 
 .PHONY: init_docker_dirs
-init_docker_dirs: init_scripts
+init_docker_dirs:
 	# Выполним скрипт для инициализации директорий Docker
-	sudo ./sh/init_docker_dirs.sh
+	./sh/init_docker_dirs.sh
 
 .PHONY: init_tls
 init_tls:
 	# Выполним скрипт для генерации сертификатов
-	sudo ./sh/init_tls.sh
+	./sh/init_tls.sh
 
 # Команды для очистки
 .PHONY: clear_data
-clear_data: init_scripts
+clear_data:
 	# Выполним скрипт для очистки данных
-	sudo ./sh/clear_data.sh
+	./sh/clear_data.sh
 
 .PHONY: clear_certs
-clear_certs: init_scripts
+clear_certs:
 	# Зачистим сертификаты
-	sudo ./sh/clear_certs.sh
+	./sh/clear_certs.sh
 
 .PHONY: clear_logs
-clear_logs: init_scripts
+clear_logs:
 	# Зачистим логи
-	sudo ./sh/clear_logs.sh
+	./sh/clear_logs.sh
 
 .PHONY: clear_all
 clear_all: clear_data clear_certs clear_logs
