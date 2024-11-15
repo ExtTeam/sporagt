@@ -47,13 +47,21 @@ clear_all: clear_data clear_certs clear_logs
 start_project: init_scripts init_env init_docker_dirs
 	@echo "Проект успешно инициализирован и готов к запуску"
 
+.PHONY: build
+build:
+	docker compose build
+
 .PHONY: up
 up:
-	docker compose up $(filter-out $@,$(MAKECMDGOALS))
+	docker compose up -d
 
 .PHONY: down
 down:
-	docker compose down $(filter-out $@,$(MAKECMDGOALS))
+	docker compose down
+
+.PHONY: down-v
+down:
+	docker compose down -v
 
 .PHONY: rebuild
 rebuild:
