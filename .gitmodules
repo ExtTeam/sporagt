@@ -1,8 +1,8 @@
 [submodule "nuxt"]
 	path = nuxt
-	url = git@github.com:ExtTeam/nuxt-starter.git
+	url = git@github.com:ExtTeam/sporagt-nuxt.git
 	branch = main
 [submodule "directus"]
 	path = directus
-	url = git@github.com:ExtTeam/directus-starter.git
+	url = git@github.com:ExtTeam/sporagt-directus.git
 	branch = main
