@@ -21,8 +21,8 @@ services:
       - "6379:6379"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./.docker/traefik/configuration:/configuration/
-      - ./.docker/traefik/certs:/etc/certs:ro
+      - traefik_configuration:/configuration/
+      - traefik_certs:/etc/certs:ro
 
   nuxt:
     labels:
@@ -85,6 +85,18 @@ services:
       - "traefik.tcp.services.redis.loadBalancer.server.port=6379"
       - "traefik.tcp.routers.redis.service=redis"
 volumes:
+  traefik_configuration:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.docker/traefik/configuration
+  traefik_certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.docker/traefik/certs
   directus_extensions:
     driver: local
     driver_opts:
