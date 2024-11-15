@@ -3,7 +3,7 @@ FROM node:20-alpine3.20 as installer
 
 WORKDIR /nuxt
 
-COPY ./frontend/package.json ./frontend/yarn.lock  ./
+COPY ./nuxt/package.json ./nuxt/yarn.lock  ./
 
 RUN yarn install \
     && yarn cache clean --mirror \
@@ -43,6 +43,6 @@ WORKDIR /nuxt
 COPY --from=installer --link /nuxt/node_modules node_modules
 ENV PATH ./node_modules/.bin/:$PATH
 
-COPY ./frontend .
+COPY ./nuxt .
 
 CMD ["yarn", "dev"]

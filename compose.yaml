@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: .docker/nuxt/Dockerfile
       target: production
-    image: ${COMPOSE_PROJECT_NAME}/frontend:latest
+    image: ${COMPOSE_PROJECT_NAME}/nuxt:latest
     volumes:
       - /etc/localtime:/etc/localtime:ro
     env_file:

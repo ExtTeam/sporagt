@@ -1,8 +1,6 @@
 [submodule "nuxt"]
-    path = nuxt
-    url = git@github.com:ExtTeam/nuxt-starter.git
-    branch = main
+	path = nuxt
+	url = git@github.com:ExtTeam/nuxt-starter.git
 [submodule "directus"]
-    path = directus
-    url = git@github.com:ExtTeam/directus-starter.git
-    branch = main
+	path = directus
+	url = git@github.com:ExtTeam/directus-starter.git

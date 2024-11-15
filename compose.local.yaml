@@ -36,7 +36,7 @@ services:
       - "traefik.http.routers.nuxt.tls=true"
     build:
       context: ./
-      dockerfile: .docker/frontend/Dockerfile
+      dockerfile: .docker/nuxt/Dockerfile
       target: development
     ports:
       - 3000:3000
