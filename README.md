@@ -79,12 +79,16 @@
     make init_tls
     ```
 
-### Шаг 5: Запуск проекта
-
-- Для локального запуска всех сервисов используйте следующую команду:
-
+### Шаг 5: Сборка проекта
+- Для сборки всех сервисов используйте следующую команду:
     ```sh
-    make up -d
+    make build
+    ```
+
+### Шаг 6: Запуск проекта
+- Для запуска всех сервисов используйте следующую команду:
+    ```sh
+    make up
     ```
 
 Это поднимет все необходимые сервисы:
@@ -93,9 +97,9 @@
 
 ### Шаг 6: Итог
 - Доступны доменные имена
-  - `{COMPOSE_PROJECT_NAME}.localhost`
-  - `directus.{COMPOSE_PROJECT_NAME}.localhost`
-  - `s3.{COMPOSE_PROJECT_NAME}.localhost`
+    - `{COMPOSE_PROJECT_NAME}.localhost`
+    - `directus.{COMPOSE_PROJECT_NAME}.localhost`
+    - `s3.{COMPOSE_PROJECT_NAME}.localhost`
 
 **Примечание:** Переменная `COMPOSE_PROJECT_NAME` устанавливается в файле `.env`
 
@@ -112,7 +116,7 @@
 - Остановите сервисы и удалите volumes:
 
     ```sh
-    make down -v
+    make down-v
     ```
 
 ## Полезные команды
