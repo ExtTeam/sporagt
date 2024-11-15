@@ -49,11 +49,15 @@ start_project: init_scripts init_env init_docker_dirs
 
 .PHONY: up
 up:
-	docker compose up $(filter-out $@,$(MAKECMDGOALS))
+	docker compose up -d
 
 .PHONY: down
 down:
-	docker compose down $(filter-out $@,$(MAKECMDGOALS))
+	docker compose down
+
+.PHONY: down-v
+down:
+	docker compose down -v
 
 .PHONY: rebuild
 rebuild:
