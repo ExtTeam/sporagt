@@ -1,0 +1,129 @@
+services:
+  traefik:
+    image: traefik:v3.2
+    command:
+      - "--accesslog"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.postgres.address=:5432"
+      - "--entrypoints.redis.address=:6379"
+      - "--providers.file.directory=/configuration/"
+      - "--providers.file.watch=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8082:8080"
+      - "5432:5432"
+      - "6379:6379"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.docker/traefik/configuration:/configuration/
+      - ./.docker/traefik/certs:/etc/certs:ro
+
+  nuxt:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nuxt-http.entrypoints=web"
+      - "traefik.http.routers.nuxt-http.rule=Host(`${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.nuxt-http.middlewares=nuxt"
+      - "traefik.http.services.nuxt.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.nuxt.redirectscheme.scheme=https"
+      - "traefik.http.routers.nuxt.entrypoints=websecure"
+      - "traefik.http.routers.nuxt.rule=Host(`${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.nuxt.tls=true"
+    build:
+      context: ./
+      dockerfile: .docker/frontend/Dockerfile
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - nuxt_node-modules:/nuxt/node_modules
+      - ./nuxt:/nuxt
+
+  directus:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directus-http.entrypoints=web"
+      - "traefik.http.routers.directus-http.rule=Host(`directus.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.directus-http.middlewares=directus-https"
+      - "traefik.http.services.directus.loadbalancer.server.port=8055"
+      - "traefik.http.middlewares.directus-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.directus.entrypoints=websecure"
+      - "traefik.http.routers.directus.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.directus.tls=true"
+  minio:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio-http.entrypoints=web"
+      - "traefik.http.routers.minio-http.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.minio-http.middlewares=minio-https"
+      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+      - "traefik.http.middlewares.minio-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.minio.entrypoints=websecure"
+      - "traefik.http.routers.minio.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.minio.tls=true"
+  postgres:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.postgres.entrypoints=postgres"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.tls=false"
+      - "traefik.tcp.services.postgres.loadBalancer.server.port=5432"
+      - "traefik.tcp.routers.postgres.service=postgres"
+  redis:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.redis.entrypoints=redis"
+      - "traefik.tcp.routers.redis.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.redis.tls=false"
+      - "traefik.tcp.services.redis.loadBalancer.server.port=6379"
+      - "traefik.tcp.routers.redis.service=redis"
+volumes:
+  directus_extensions:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./directus/extensions
+  directus_migrations:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./directus/migrations
+  directus_templates:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./directus/templates
+  directus_upload:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./directus/upload
+  nuxt_node-modules:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.docker/postgres/data
+  minio_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.docker/minio/data
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./.docker/redis/data

@@ -1,0 +1,12 @@
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+/.env
+/.env.directus
+/.env.nuxt
+/.env.postgres
+/.env.minio
+/.idea
+.docker/postgres/data
+.docker/logs
