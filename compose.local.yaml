@@ -54,7 +54,7 @@ services:
       - "traefik.http.services.directus.loadbalancer.server.port=8055"
       - "traefik.http.middlewares.directus-https.redirectscheme.scheme=https"
       - "traefik.http.routers.directus.entrypoints=websecure"
-      - "traefik.http.routers.directus.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
+      - "traefik.http.routers.directus.rule=Host(`directus.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
       - "traefik.http.routers.directus.tls=true"
   minio:
     labels:
@@ -62,7 +62,7 @@ services:
       - "traefik.http.routers.minio-http.entrypoints=web"
       - "traefik.http.routers.minio-http.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"
       - "traefik.http.routers.minio-http.middlewares=minio-https"
-      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+      - "traefik.http.services.minio.loadbalancer.server.port=9001"
       - "traefik.http.middlewares.minio-https.redirectscheme.scheme=https"
       - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.rule=Host(`s3.${COMPOSE_PROJECT_NAME:-app}.localhost`)"

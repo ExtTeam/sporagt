@@ -1,0 +1,4 @@
+**/.gitkeep
+.docker/postgres/data/.gitignore
+node_modules
+*.log

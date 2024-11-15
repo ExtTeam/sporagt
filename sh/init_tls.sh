@@ -19,4 +19,6 @@ if [ -z "$COMPOSE_PROJECT_NAME" ]; then
 fi
 
 # Генерация сертификатов с mkcert
-mkcert -cert-file .docker/traefik/certs/local-cert.pem -key-file .docker/traefik/certs/local-key.pem "${COMPOSE_PROJECT_NAME}.localhost" "*.${COMPOSE_PROJECT_NAME}.localhost" && mkcert -install
+mkcert -cert-file .docker/traefik/certs/local-cert.pem -key-file .docker/traefik/certs/local-key.pem "${COMPOSE_PROJECT_NAME}.localhost" "*.${COMPOSE_PROJECT_NAME}.localhost"
+
+sudo -S mkcert -install

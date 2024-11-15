@@ -1,6 +1,6 @@
 services:
   nuxt:
-    container_name: 'nuxt'
+    container_name: '${COMPOSE_PROJECT_NAME:-app}-nuxt'
     restart: always
     build:
       context: ./
@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.nuxt
     healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://0.0.0.0:3000/health" ]
+      test: [ "CMD", "wget", "--spider", "-q", "http://0.0.0.0:3000" ]
       interval: 1s
       timeout: 1s
       retries: 5
@@ -21,18 +21,27 @@ services:
       redis:
         condition: service_healthy
   directus:
-    image: directus/directus:11.1.2
+    container_name: '${COMPOSE_PROJECT_NAME:-app}-directus'
+    restart: always
+    image: directus/directus:11.2.1
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - directus_extensions:/directus/extensions
       - directus_migrations:/directus/migrations
       - directus_templates:/directus/templates
-      - directus_upload:/directus/upload
     env_file:
       - .env.directus
   postgres:
-    image: postgis/postgis:17-3.5-alpine
+    container_name: '${COMPOSE_PROJECT_NAME:-app}-postgres'
     restart: always
+    image: postgis/postgis:17-3.5-alpine
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - postgres_data:/var/lib/postgresql/data:rw
@@ -44,7 +53,10 @@ services:
       retries: 5
       start_period: 60s
   minio:
+    container_name: '${COMPOSE_PROJECT_NAME:-app}-minio'
+    restart: always
     image: minio/minio
+    command: server /data --console-address ":9001"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - minio_data:/data
@@ -56,12 +68,14 @@ services:
       timeout: 20s
       retries: 3
   redis:
-    container_name: 'redis'
-    image: redis:7-alpine3.20
+    container_name: '${COMPOSE_PROJECT_NAME:-app}-redis'
     restart: always
+    image: redis:7-alpine3.20
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - redis_data:/data
+    env_file:
+      - .env.redis
     healthcheck:
       test: [ 'CMD', 'redis-cli', 'ping' ]
       interval: 500ms
